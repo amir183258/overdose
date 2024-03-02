@@ -1,0 +1,76 @@
+Number of Observations: 13668
+Number of Independent Variables: 14
+Kernel: Adaptive
+Neightbours: 400
+
+--------------- Global ML Model Summary ---------------
+
+Ranger result
+
+Call:
+ ranger(overdose_rate ~ year + season + month + ppm + tmean +      Hispanic + Black + Asian + EP_UNEMP + EP_HBURD + EP_NOHSDP +      EP_UNINSUR + EP_CROWD + EP_NOVEH, data = train_data, num.trees = 10,      mtry = 4, importance = "impurity", num.threads = NULL) 
+
+Type:                             Regression 
+Number of trees:                  10 
+Sample size:                      13668 
+Number of independent variables:  14 
+Mtry:                             4 
+Target node size:                 5 
+Variable importance mode:         impurity 
+Splitrule:                        variance 
+OOB prediction error (MSE):       0.06219 
+R squared (OOB):                  0.9378146 
+
+Importance:
+
+      year     season      month        ppm      tmean   Hispanic      Black 
+ 459.73438   43.63415   98.87229  168.23568  135.98923 1736.36811 1930.32709 
+     Asian   EP_UNEMP   EP_HBURD  EP_NOHSDP EP_UNINSUR   EP_CROWD   EP_NOVEH 
+1807.55651 2019.34065 1351.54832 1120.01350  985.13691  733.54288  789.94700 
+
+Mean Square Error (Not OOB): 0.019
+R-squared (Not OOB) %: 98.066
+AIC (Not OOB): -53901.172
+AICc (Not OOB): -53901.136
+
+--------------- Local Model Summary ---------------
+
+
+Residuals OOB:
+
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-2.7714  0.0000  0.0000  0.1421  0.2729  4.9297 
+
+Residuals Predicted (Not OOB):
+
+      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+-0.7963197 -0.0239719  0.0000000 -0.0000085  0.0223677  1.3633175 
+
+Local Variable Importance:
+
+           Min       Max      Mean       StD
+year         0 237.36751 14.740154 22.665316
+season       0  23.87908  1.266250  1.832070
+month        0  31.34791  2.786462  3.699780
+ppm          0  68.23419  3.854287  5.404590
+tmean        0  63.62091  3.789145  5.205976
+Hispanic     0 331.07513 14.349098 22.177063
+Black        0 267.03038 16.311150 22.741855
+Asian        0 266.95228 17.855988 24.348588
+EP_UNEMP     0 507.11949 15.524340 29.478855
+EP_HBURD     0 473.88241 15.916757 22.953030
+EP_NOHSDP    0 296.06259 13.227966 19.253379
+EP_UNINSUR   0 227.21964 12.144745 17.724627
+EP_CROWD     0 180.66669 10.187938 14.611786
+EP_NOVEH     0 450.29680 15.851323 31.634719
+
+Mean squared error (OOB): 0.212
+R-squared (OOB) %: 78.758
+AIC (OOB): -21144.109
+AICc (OOB): -21144.074
+Mean squared error Predicted (Not OOB): 0.008
+R-squared Predicted (Not OOB) %: 99.175
+AIC Predicted (Not OOB): -65540.038
+AICc Predicted (Not OOB): -65540.002
+
+Calculation time (in seconds): 8.7204
