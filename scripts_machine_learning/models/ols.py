@@ -13,6 +13,11 @@ if __name__ == "__main__":
     data = pd.read_csv(data_file)
     data = data[data.columns[1:]]
 
+    # Using 70% of data.
+    train_index = int(len(data) * 70 / 100)
+
+    data = pd.DataFrame(data.values[:train_index, :], columns=data.columns)
+
     # Standardizing the data.
     scaler =  StandardScaler().fit(data.values)
     data = pd.DataFrame(scaler.transform(data.values), columns=data.columns)

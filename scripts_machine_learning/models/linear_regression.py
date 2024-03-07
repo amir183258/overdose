@@ -41,7 +41,7 @@ if __name__ == "__main__":
     print("Train data R^2: ", regressor.score(X,y))
     print("Test data R^2: ", regressor.score(X_test, y_test))
 
-    exit()
+    """
     print(regressor.aic) 
     print(f"Modeling time: {end_time - start_time} seconds.")
     print("test-set R^2: ", regressor.rsquared)
@@ -52,3 +52,4 @@ if __name__ == "__main__":
         f.write(report)
     
     print("OLS is done!!")
+    """

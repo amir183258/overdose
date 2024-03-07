@@ -2,8 +2,9 @@ import time
 import numpy as np
 import pandas as pd
 
-from mgtwr.sel import SearchGWRParameter
-from mgtwr.model import GWR
+import libpysal as ps
+from mgwr.gwr import GWR
+from mgwr.sel_bw import Sel_BW
 
 from sklearn.preprocessing import StandardScaler 
 from sklearn.metrics import r2_score
@@ -15,7 +16,6 @@ if __name__ == "__main__":
     data = data[data.columns[1:]]
 
     ################## Here is for test. ########
-    """
     cols = data.columns
     data = data.values
     data = data[data[:, 0] == 2022]
@@ -24,38 +24,79 @@ if __name__ == "__main__":
     data = pd.DataFrame(data, columns=cols)
 
     data = data[data.columns[3:]]
-    """
     ##############################################
-    coords = data[["X", "Y"]]
+
+    # Train and Test data.
+    train_index = int(len(data) * 70 / 100)
+
+    train_data = pd.DataFrame(data.values[:train_index, :], columns=data.columns)
+    test_data = pd.DataFrame(data.values[train_index:, :], columns=data.columns)
+
+    # Coordinates
+    coords = train_data[["X", "Y"]].values
+    coords_test = test_data[["X", "Y"]].values
 
     # Standardizing the data
-    scaler =  StandardScaler().fit(data)
-    data= pd.DataFrame(scaler.transform(data), columns=data.columns)
+    scaler =  StandardScaler().fit(train_data)
+    train_data = pd.DataFrame(scaler.transform(train_data), columns=data.columns)
+    test_data = pd.DataFrame(scaler.transform(test_data), columns=data.columns)
 
     # Creating features (X) and targets (y) and coordinates.
-    X = data[data.columns[:-1]]
+    X = train_data[data.columns[:-1]]
+    X_test = test_data[data.columns[:-1]]
 
     X = X.drop(labels=["X", "Y"], axis="columns")
+    X_cols = X.columns
+    X = X.values
+    X_test = X_test.drop(labels=["X", "Y"], axis="columns")
+    X_test = X_test.values
 
-    y = data[data.columns[-1]]
+    y = train_data[data.columns[-1]]
     y = y.values.reshape(-1, 1)
-
+    y_test = test_data[data.columns[-1]]
+    y_test = y_test.values.reshape(-1, 1)
 
     # GWR Model
-    #sel = SearchGWRParameter(coords, X, y, kernel='gaussian', fixed=True, thread=5)
-    #bw = sel.search(verbose=True, time_cost=True)
+    #gwr_selector = Sel_BW(coords, y, X, kernel="gaussian", spherical=True)
+    #bw = gwr_selector.search()
 
-    bw = 1.0
+    bw = 71.0
 
     print("**** Selected Bandwidth: " + str(bw) + "**** ")
 
     start_time = time.time()
-    gwr = GWR(coords, X, y, bw, kernel='gaussian', fixed=True, thread=5).fit()
+    model = GWR(coords, y, X, bw, kernel="gaussian", spherical=True)
+    gwr_results = model.fit()
     end_time = time.time()
 
     print("**** Mode done after %s seconds. ****" % (end_time - start_time))
 
-    print("Train data R^2: ", gwr.R2)
+    gwr_results.summary()
+
+    cols = ["Intercept"]
+    for c in X_cols:
+        cols.append(c)
+
+    parameters = pd.DataFrame(gwr_results.params, columns=cols)
+    parameters.to_csv("./gwr/gwr_coeffs.csv")
+
+    tvalues = pd.DataFrame(gwr_results.tvalues, columns=cols)
+    tvalues.to_csv("./gwr/gwr_tvalues.csv")
+
+    residuals = pd.DataFrame(gwr_results.resid_response)
+    residuals.to_csv("./gwr/gwr_residuals.csv")
+
+    localR2 = pd.DataFrame(gwr_results.localR2)
+    localR2.to_csv("./gwr/local_r2.csv")
+
+    scale = gwr_results.scale
+    residuals = gwr_results.resid_response
+    pred_results = model.predict(coords_test, X_test, scale, residuals)
+
+    print("Test data-set R^2:", np.corrcoef(pred_results.predictions.flatten(), y_test.flatten())[0][1])
+
+
+    exit()
 
     # Exporting the report
     report_name = "gwr_report.txt"

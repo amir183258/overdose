@@ -11,14 +11,10 @@ if __name__ == "__main__":
     cols = data.columns
     row_numbers =  len(data)
 
-    print(row_numbers)
-    exit()
-
-    data = data.values[:int(row_numbers * 0.3), :]
+    data = data.values[:int(row_numbers * 0.003), :]
     #data = data.values[:5000, :]
 
     data = pd.DataFrame(data, columns=cols)
-
     ####################################
 
     train_index = int(len(data) * 70 / 100)
