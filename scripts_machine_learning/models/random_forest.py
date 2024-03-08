@@ -33,7 +33,7 @@ if __name__ == "__main__":
     y_test = test_data[data.columns[-1]]
 
     # Parameters for grid search.
-    n_est = list(range(700, 1001, 100))
+    n_est = list(range(100, 1001, 100))
     max_features = [x / 10 for x in range(1, 11, 1)] 
 
     max_r2 = 0

@@ -16,6 +16,7 @@ if __name__ == "__main__":
     data = data[data.columns[1:]]
 
     ################## Here is for test. ########
+    """
     cols = data.columns
     data = data.values
     data = data[data[:, 0] == 2022]
@@ -24,6 +25,7 @@ if __name__ == "__main__":
     data = pd.DataFrame(data, columns=cols)
 
     data = data[data.columns[3:]]
+    """
     ##############################################
 
     # Train and Test data.
@@ -71,7 +73,7 @@ if __name__ == "__main__":
 
     print("**** Mode done after %s seconds. ****" % (end_time - start_time))
 
-    gwr_results.summary()
+    #gwr_results.summary()
 
     cols = ["Intercept"]
     for c in X_cols:
